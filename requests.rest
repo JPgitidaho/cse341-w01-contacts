@@ -1,0 +1,34 @@
+@baseUrl = http://localhost:3000
+
+### Get all contacts
+GET {{baseUrl}}/contacts
+
+### Get contact by id
+GET {{baseUrl}}/contacts/{{id}}
+
+### Create a new contact
+POST {{baseUrl}}/contacts
+Content-Type: application/json
+
+{
+  "firstName": "Ada",
+  "lastName": "Lovelace",
+  "email": "ada@example.com",
+  "favoriteColor": "purple",
+  "birthday": "1815-12-10"
+}
+
+### Update a contact
+PUT {{baseUrl}}/contacts/{{id}}
+Content-Type: application/json
+
+{
+  "firstName": "Ada",
+  "lastName": "Lovelace",
+  "email": "ada@updated.com",
+  "favoriteColor": "violet",
+  "birthday": "1815-12-10"
+}
+
+### Delete a contact
+DELETE {{baseUrl}}/contacts/{{id}}

@@ -2,14 +2,21 @@ import express from "express";
 import dotenv from "dotenv";
 import { connectDB } from "./db.js";
 import contacts from "./routes/contacts.js";
+import { swaggerMiddleware } from "./swagger.js";
+
 
 dotenv.config();
 
 const app = express();
+app.use(express.json());
+
 
 app.get("/", (req, res) => {
   res.send("Contacts service");
 });
+
+app.use("/api-docs", ...swaggerMiddleware);
+
 
 app.use("/contacts", contacts);
 
