@@ -1,34 +1,37 @@
-import express from "express";
-import dotenv from "dotenv";
-import { connectDB } from "./db.js";
-import contacts from "./routes/contacts.js";
-import { swaggerMiddleware } from "./swagger.js";
-
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.js';
+import movieRoutes from './routes/movieRoutes.js';
+import directorRoutes from './routes/directorRoutes.js';
 
 dotenv.config();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
+app.use(morgan('dev'));
 
-
-app.get("/", (req, res) => {
-  res.send("Contacts service");
-});
-
-app.use("/api-docs", ...swaggerMiddleware);
-
-
-app.use("/contacts", contacts);
-
-const port = process.env.PORT || 3000;
-
-connectDB()
-  .then(() => {
-    app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
-    });
-  })
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log('MongoDB connected'))
   .catch((err) => {
-    console.error("DB connection failed:", err?.message || err);
+    console.error('MongoDB connection error');
     process.exit(1);
   });
+
+app.use('/api/movies', movieRoutes);
+app.use('/api/directors', directorRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.get('/', (req, res) => {
+  res.json({ ok: true, message: 'Movies API' });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});

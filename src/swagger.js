@@ -1,131 +1,111 @@
-import swaggerUi from "swagger-ui-express";
-
-const spec = {
+export default {
   openapi: "3.0.0",
   info: {
-    title: "CSE 341 Contacts API",
+    title: "Movies API",
     version: "1.0.0",
-    description: "API for managing contacts"
+    description: "API for managing movies and directors"
   },
   servers: [
     {
-      url: "https://cse341-project1-contacts-0jjj.onrender.com",
-      description: "Render server"
-    },
-    {
-      url: "http://localhost:3000",
-      description: "Local server"
+      url: "http://localhost:3000"
     }
   ],
   paths: {
-    "/contacts": {
+    "/api/movies": {
       get: {
-        summary: "Get all contacts",
+        summary: "Get all movies",
         responses: {
-          "200": { description: "OK" }
+          200: { description: "List of movies" }
         }
       },
       post: {
-        summary: "Create a new contact",
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/ContactInput" }
-            }
-          }
-        },
+        summary: "Create a movie",
         responses: {
-          "201": { description: "Created" },
-          "400": { description: "Bad Request" }
+          201: { description: "Movie created" },
+          400: { description: "Validation error" }
         }
       }
     },
-    "/contacts/{id}": {
+    "/api/movies/{id}": {
       get: {
-        summary: "Get a contact by ID",
+        summary: "Get a movie by ID",
         parameters: [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "string" }
-          }
+          { name: "id", in: "path", required: true, schema: { type: "string" } }
         ],
         responses: {
-          "200": { description: "OK" },
-          "400": { description: "Invalid ID" },
-          "404": { description: "Not found" }
+          200: { description: "Movie found" },
+          404: { description: "Movie not found" }
         }
       },
       put: {
-        summary: "Update a contact by ID",
+        summary: "Update a movie",
         parameters: [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "string" }
-          }
+          { name: "id", in: "path", required: true, schema: { type: "string" } }
         ],
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/ContactInput" }
-            }
-          }
-        },
         responses: {
-          "204": { description: "No Content" },
-          "400": { description: "Bad Request" },
-          "404": { description: "Not found" }
+          200: { description: "Movie updated" },
+          400: { description: "Validation error" },
+          404: { description: "Movie not found" }
         }
       },
       delete: {
-        summary: "Delete a contact by ID",
+        summary: "Delete a movie",
         parameters: [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "string" }
-          }
+          { name: "id", in: "path", required: true, schema: { type: "string" } }
         ],
         responses: {
-          "204": { description: "No Content" },
-          "400": { description: "Invalid ID" },
-          "404": { description: "Not found" }
+          200: { description: "Movie deleted" },
+          404: { description: "Movie not found" }
         }
       }
-    }
-  },
-  components: {
-    schemas: {
-      Contact: {
-        type: "object",
-        properties: {
-          _id: { type: "string", example: "66f2c0e3e0a10b6a0a5c9b1a" },
-          firstName: { type: "string" },
-          lastName: { type: "string" },
-          email: { type: "string" },
-          favoriteColor: { type: "string" },
-          birthday: { type: "string", example: "1990-05-12" }
+    },
+    "/api/directors": {
+      get: {
+        summary: "Get all directors",
+        responses: {
+          200: { description: "List of directors" }
         }
       },
-      ContactInput: {
-        type: "object",
-        required: ["firstName", "lastName", "email", "favoriteColor", "birthday"],
-        properties: {
-          firstName: { type: "string" },
-          lastName: { type: "string" },
-          email: { type: "string" },
-          favoriteColor: { type: "string" },
-          birthday: { type: "string" }
+      post: {
+        summary: "Create a director",
+        responses: {
+          201: { description: "Director created" },
+          400: { description: "Validation error" }
+        }
+      }
+    },
+    "/api/directors/{id}": {
+      get: {
+        summary: "Get a director by ID",
+        parameters: [
+          { name: "id", in: "path", required: true, schema: { type: "string" } }
+        ],
+        responses: {
+          200: { description: "Director found" },
+          404: { description: "Director not found" }
+        }
+      },
+      put: {
+        summary: "Update a director",
+        parameters: [
+          { name: "id", in: "path", required: true, schema: { type: "string" } }
+        ],
+        responses: {
+          200: { description: "Director updated" },
+          400: { description: "Validation error" },
+          404: { description: "Director not found" }
+        }
+      },
+      delete: {
+        summary: "Delete a director",
+        parameters: [
+          { name: "id", in: "path", required: true, schema: { type: "string" } }
+        ],
+        responses: {
+          200: { description: "Director deleted" },
+          404: { description: "Director not found" }
         }
       }
     }
   }
 };
-
-export const swaggerMiddleware = [swaggerUi.serve, swaggerUi.setup(spec)];
