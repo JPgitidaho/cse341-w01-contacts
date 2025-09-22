@@ -1,0 +1,30 @@
+🎬 Movies API
+
+API RESTful for managing movies and directors.
+Built with Node.js, Express, and MongoDB.
+Deployed on Render with full Swagger documentation
+
+
+Features (Week 03)
+CRUD operations for movies and directors.
+
+
+movie
+{
+  "title": "Inception",
+  "genre": "Sci-Fi",
+  "releaseYear": 2010,
+  "duration": 148,
+  "rating": 9,
+  "language": "English",
+  "budget": 160000000
+}
+
+Director
+
+{
+  "name": "Christopher Nolan",
+  "birthdate": "1970-07-30",
+  "nationality": "British-American",
+  "awards": ["Oscar", "BAFTA"]
+}
