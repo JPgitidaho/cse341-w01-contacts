@@ -38,6 +38,10 @@ app.use(
 
 app.use(passport.initialize())
 app.use(passport.session())
+app.get('/', (req, res) => {
+  res.send('Movies API is running...');
+});
+
 
 app.use('/api/directors', directorRoutes)
 app.use('/api/movies', movieRoutes)
