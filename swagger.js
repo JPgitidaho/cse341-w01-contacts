@@ -6,7 +6,7 @@ const options = {
     openapi: "3.0.0",
     info: {
       title: "Movies API",
-      version: "1.0.0",
+      version: "1.0.0"
     },
     servers: [
       { url: "http://localhost:3000", description: "Local server" },
@@ -17,9 +17,9 @@ const options = {
         sessionAuth: {
           type: "apiKey",
           in: "cookie",
-          name: "connect.sid",
-        },
-      },
+          name: "connect.sid"
+        }
+      }
     },
     security: [{ sessionAuth: [] }],
     paths: {
@@ -77,18 +77,14 @@ const options = {
         get: {
           tags: ["Auth"],
           summary: "Logout current user",
-          responses: {
-            200: { description: "Logged out successfully" }
-          }
+          responses: { 200: { description: "Logged out successfully" } }
         }
       },
       "/auth/google": {
         get: {
           tags: ["Auth"],
           summary: "Login with Google",
-          responses: {
-            302: { description: "Redirect to Google login" }
-          }
+          responses: { 302: { description: "Redirect to Google login" } }
         }
       },
       "/auth/google/callback": {
@@ -111,7 +107,25 @@ const options = {
           tags: ["Directors"],
           summary: "Create a new director",
           security: [{ sessionAuth: [] }],
-          responses: { 201: { description: "Director created" }, 401: { description: "Unauthorized" } }
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    name: { type: "string", example: "Peter Jackson" },
+                    birthYear: { type: "integer", example: 1961 }
+                  },
+                  required: ["name"]
+                }
+              }
+            }
+          },
+          responses: {
+            201: { description: "Director created" },
+            401: { description: "Unauthorized" }
+          }
         }
       },
       "/api/directors/{id}": {
@@ -119,21 +133,44 @@ const options = {
           tags: ["Directors"],
           summary: "Get director by ID",
           parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
-          responses: { 200: { description: "Director found" }, 404: { description: "Not found" } }
+          responses: {
+            200: { description: "Director found" },
+            404: { description: "Not found" }
+          }
         },
         put: {
           tags: ["Directors"],
           summary: "Update director by ID",
           security: [{ sessionAuth: [] }],
           parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
-          responses: { 200: { description: "Director updated" }, 401: { description: "Unauthorized" } }
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    name: { type: "string", example: "Updated Director" },
+                    birthYear: { type: "integer", example: 1970 }
+                  }
+                }
+              }
+            }
+          },
+          responses: {
+            200: { description: "Director updated" },
+            401: { description: "Unauthorized" }
+          }
         },
         delete: {
           tags: ["Directors"],
           summary: "Delete director by ID",
           security: [{ sessionAuth: [] }],
           parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
-          responses: { 200: { description: "Director deleted" }, 401: { description: "Unauthorized" } }
+          responses: {
+            200: { description: "Director deleted" },
+            401: { description: "Unauthorized" }
+          }
         }
       },
       "/api/movies": {
@@ -146,7 +183,26 @@ const options = {
           tags: ["Movies"],
           summary: "Create a new movie",
           security: [{ sessionAuth: [] }],
-          responses: { 201: { description: "Movie created" }, 401: { description: "Unauthorized" } }
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    title: { type: "string", example: "The Lord of the Rings" },
+                    year: { type: "integer", example: 2001 },
+                    director: { type: "string", example: "directorId" }
+                  },
+                  required: ["title", "year", "director"]
+                }
+              }
+            }
+          },
+          responses: {
+            201: { description: "Movie created" },
+            401: { description: "Unauthorized" }
+          }
         }
       },
       "/api/movies/{id}": {
@@ -154,21 +210,45 @@ const options = {
           tags: ["Movies"],
           summary: "Get movie by ID",
           parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
-          responses: { 200: { description: "Movie found" }, 404: { description: "Not found" } }
+          responses: {
+            200: { description: "Movie found" },
+            404: { description: "Not found" }
+          }
         },
         put: {
           tags: ["Movies"],
           summary: "Update movie by ID",
           security: [{ sessionAuth: [] }],
           parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
-          responses: { 200: { description: "Movie updated" }, 401: { description: "Unauthorized" } }
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    title: { type: "string", example: "Updated Title" },
+                    year: { type: "integer", example: 2025 },
+                    director: { type: "string", example: "directorId" }
+                  }
+                }
+              }
+            }
+          },
+          responses: {
+            200: { description: "Movie updated" },
+            401: { description: "Unauthorized" }
+          }
         },
         delete: {
           tags: ["Movies"],
           summary: "Delete movie by ID",
           security: [{ sessionAuth: [] }],
           parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
-          responses: { 200: { description: "Movie deleted" }, 401: { description: "Unauthorized" } }
+          responses: {
+            200: { description: "Movie deleted" },
+            401: { description: "Unauthorized" }
+          }
         }
       }
     }
