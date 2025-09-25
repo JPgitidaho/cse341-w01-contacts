@@ -1,166 +1,183 @@
-export default {
-  openapi: '3.0.0',
-  info: {
-    title: 'Movies API',
-    version: '1.0.0',
-    description: 'API for managing directors and movies with authentication'
-  },
-  servers: [
-    { url: 'http://localhost:3000', description: 'Local server' },
-    { url: 'https://your-app.onrender.com', description: 'Render server' }
-  ],
-  components: {
-    securitySchemes: {
-      sessionAuth: {
-        type: 'apiKey',
-        in: 'cookie',
-        name: 'connect.sid'
-      }
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Movies API",
+      version: "1.0.0",
     },
-    schemas: {
-      Director: {
-        type: 'object',
-        properties: {
-          _id: { type: 'string' },
-          name: { type: 'string' },
-          birthdate: { type: 'string', format: 'date' }
-        }
+    servers: [
+      { url: "http://localhost:3000", description: "Local server" },
+      { url: "https://cse341-w03-w04-movies-api.onrender.com", description: "Render server" }
+    ],
+    components: {
+      securitySchemes: {
+        sessionAuth: {
+          type: "apiKey",
+          in: "cookie",
+          name: "connect.sid",
+        },
       },
-      Movie: {
-        type: 'object',
-        properties: {
-          _id: { type: 'string' },
-          title: { type: 'string' },
-          year: { type: 'integer' },
-          director: { type: 'string' }
-        }
-      },
-      User: {
-        type: 'object',
-        properties: {
-          _id: { type: 'string' },
-          email: { type: 'string' },
-          provider: { type: 'string' },
-          displayName: { type: 'string' }
-        }
-      }
-    }
-  },
-  paths: {
-    '/api/directors': {
-      get: {
-        summary: 'Get all directors',
-        responses: { 200: { description: 'List of directors' } }
-      },
-      post: {
-        summary: 'Create a new director',
-        security: [{ sessionAuth: [] }],
-        responses: { 201: { description: 'Director created' } }
-      }
     },
-    '/api/directors/{id}': {
-      get: {
-        summary: 'Get director by ID',
-        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-        responses: { 200: { description: 'Director found' }, 404: { description: 'Not found' } }
-      },
-      put: {
-        summary: 'Update director by ID',
-        security: [{ sessionAuth: [] }],
-        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-        responses: { 200: { description: 'Director updated' }, 404: { description: 'Not found' } }
-      },
-      delete: {
-        summary: 'Delete director by ID',
-        security: [{ sessionAuth: [] }],
-        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-        responses: { 200: { description: 'Director deleted' }, 404: { description: 'Not found' } }
-      }
-    },
-    '/api/movies': {
-      get: {
-        summary: 'Get all movies',
-        responses: { 200: { description: 'List of movies' } }
-      },
-      post: {
-        summary: 'Create a new movie',
-        security: [{ sessionAuth: [] }],
-        responses: { 201: { description: 'Movie created' } }
-      }
-    },
-    '/api/movies/{id}': {
-      get: {
-        summary: 'Get movie by ID',
-        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-        responses: { 200: { description: 'Movie found' }, 404: { description: 'Not found' } }
-      },
-      put: {
-        summary: 'Update movie by ID',
-        security: [{ sessionAuth: [] }],
-        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-        responses: { 200: { description: 'Movie updated' }, 404: { description: 'Not found' } }
-      },
-      delete: {
-        summary: 'Delete movie by ID',
-        security: [{ sessionAuth: [] }],
-        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-        responses: { 200: { description: 'Movie deleted' }, 404: { description: 'Not found' } }
-      }
-    },
-    '/auth/signup': {
-      post: {
-        summary: 'Register a new user',
-        responses: { 201: { description: 'User registered and logged in' } }
-      }
-    },
-    "/auth/login": {
-  post: {
-    tags: ["Auth"],
-    summary: "Login with email and password",
-    requestBody: {
-      required: true,
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              email: {
-                type: "string",
-                example: "testuser@example.com"
-              },
-              password: {
-                type: "string",
-                example: "StrongPass123!"
+    security: [{ sessionAuth: [] }],
+    paths: {
+      "/auth/signup": {
+        post: {
+          tags: ["Auth"],
+          summary: "Create account",
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    email: { type: "string", example: "newuser@example.com" },
+                    password: { type: "string", example: "StrongPass123!" }
+                  },
+                  required: ["email", "password"]
+                }
               }
-            },
-            required: ["email", "password"]
+            }
+          },
+          responses: {
+            201: { description: "User registered and logged in" },
+            400: { description: "Invalid input" }
           }
         }
+      },
+      "/auth/login": {
+        post: {
+          tags: ["Auth"],
+          summary: "Login with email and password",
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    email: { type: "string", example: "testuser@example.com" },
+                    password: { type: "string", example: "StrongPass123!" }
+                  },
+                  required: ["email", "password"]
+                }
+              }
+            }
+          },
+          responses: {
+            200: { description: "Login successful" },
+            401: { description: "Login failed" }
+          }
+        }
+      },
+      "/auth/logout": {
+        get: {
+          tags: ["Auth"],
+          summary: "Logout current user",
+          responses: {
+            200: { description: "Logged out successfully" }
+          }
+        }
+      },
+      "/auth/google": {
+        get: {
+          tags: ["Auth"],
+          summary: "Login with Google",
+          responses: {
+            302: { description: "Redirect to Google login" }
+          }
+        }
+      },
+      "/auth/google/callback": {
+        get: {
+          tags: ["Auth"],
+          summary: "Google OAuth callback",
+          responses: {
+            200: { description: "Google login successful" },
+            401: { description: "Google login failed" }
+          }
+        }
+      },
+      "/api/directors": {
+        get: {
+          tags: ["Directors"],
+          summary: "Get all directors",
+          responses: { 200: { description: "List of directors" } }
+        },
+        post: {
+          tags: ["Directors"],
+          summary: "Create a new director",
+          security: [{ sessionAuth: [] }],
+          responses: { 201: { description: "Director created" }, 401: { description: "Unauthorized" } }
+        }
+      },
+      "/api/directors/{id}": {
+        get: {
+          tags: ["Directors"],
+          summary: "Get director by ID",
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { 200: { description: "Director found" }, 404: { description: "Not found" } }
+        },
+        put: {
+          tags: ["Directors"],
+          summary: "Update director by ID",
+          security: [{ sessionAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { 200: { description: "Director updated" }, 401: { description: "Unauthorized" } }
+        },
+        delete: {
+          tags: ["Directors"],
+          summary: "Delete director by ID",
+          security: [{ sessionAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { 200: { description: "Director deleted" }, 401: { description: "Unauthorized" } }
+        }
+      },
+      "/api/movies": {
+        get: {
+          tags: ["Movies"],
+          summary: "Get all movies",
+          responses: { 200: { description: "List of movies" } }
+        },
+        post: {
+          tags: ["Movies"],
+          summary: "Create a new movie",
+          security: [{ sessionAuth: [] }],
+          responses: { 201: { description: "Movie created" }, 401: { description: "Unauthorized" } }
+        }
+      },
+      "/api/movies/{id}": {
+        get: {
+          tags: ["Movies"],
+          summary: "Get movie by ID",
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { 200: { description: "Movie found" }, 404: { description: "Not found" } }
+        },
+        put: {
+          tags: ["Movies"],
+          summary: "Update movie by ID",
+          security: [{ sessionAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { 200: { description: "Movie updated" }, 401: { description: "Unauthorized" } }
+        },
+        delete: {
+          tags: ["Movies"],
+          summary: "Delete movie by ID",
+          security: [{ sessionAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { 200: { description: "Movie deleted" }, 401: { description: "Unauthorized" } }
+        }
       }
-    },
-    responses: {
-      200: { description: "Login successful" },
-      401: { description: "Login failed" }
     }
-  }
-    },
-    '/auth/logout': {
-      get: {
-        summary: 'Logout current user',
-        responses: { 200: { description: 'Logged out successfully' } }
-      }
-    },
-    '/auth/google': {
-      get: {
-        summary: 'Login with Google',
-        responses: { 302: { description: 'Redirect to Google OAuth' } }
-      }
-    },
-    '/auth/google/callback': {
-      get: {
-        summary: 'Google OAuth callback',
-        responses: { 200: { description: 'Google login successful' }, 401: { description: 'Google login failed' } }
-      }
-    }
-  }
-}
+  },
+  apis: []
+};
+
+const specs = swaggerJsdoc(options);
+
+export default (app) => {
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+};
