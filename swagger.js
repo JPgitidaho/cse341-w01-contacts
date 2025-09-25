@@ -113,11 +113,36 @@ export default {
         responses: { 201: { description: 'User registered and logged in' } }
       }
     },
-    '/auth/login': {
-      post: {
-        summary: 'Login with email and password',
-        responses: { 200: { description: 'Login successful' }, 401: { description: 'Login failed' } }
+    "/auth/login": {
+  post: {
+    tags: ["Auth"],
+    summary: "Login with email and password",
+    requestBody: {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              email: {
+                type: "string",
+                example: "testuser@example.com"
+              },
+              password: {
+                type: "string",
+                example: "StrongPass123!"
+              }
+            },
+            required: ["email", "password"]
+          }
+        }
       }
+    },
+    responses: {
+      200: { description: "Login successful" },
+      401: { description: "Login failed" }
+    }
+  }
     },
     '/auth/logout': {
       get: {
