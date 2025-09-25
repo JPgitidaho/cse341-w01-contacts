@@ -1,54 +1,74 @@
-import Director from '../models/Director.js';
+import Director from '../models/Director.js'
 
-export const getDirectors = async (req, res) => {
+export const getDirectors = async (req, res, next) => {
   try {
-    const directors = await Director.find();
-    res.json(directors);
-  } catch {
-    res.status(500).json({ error: 'Server error' });
+    const directors = await Director.find()
+    res.json(directors)
+  } catch (err) {
+    next(err)
   }
-};
+}
 
-export const getDirectorById = async (req, res) => {
+export const getDirectorById = async (req, res, next) => {
   try {
-    const director = await Director.findById(req.params.id);
-    if (!director) return res.status(404).json({ error: 'Director not found' });
-    res.json(director);
-  } catch {
-    res.status(400).json({ error: 'Invalid ID' });
+    const director = await Director.findById(req.params.id)
+    if (!director) {
+      const error = new Error('Director not found')
+      error.status = 404
+      throw error
+    }
+    res.json(director)
+  } catch (err) {
+    next(err)
   }
-};
+}
 
-export const createDirector = async (req, res) => {
+export const createDirector = async (req, res, next) => {
   try {
-    const { name, nationality } = req.body;
-    if (!name || !nationality) return res.status(400).json({ error: 'Missing required fields' });
-    const director = new Director(req.body);
-    await director.save();
-    res.status(201).json(director);
-  } catch {
-    res.status(500).json({ error: 'Server error' });
+    const { name, nationality } = req.body
+    if (!name || !nationality) {
+      const error = new Error('Missing required fields')
+      error.status = 400
+      throw error
+    }
+    const director = new Director(req.body)
+    await director.save()
+    res.status(201).json(director)
+  } catch (err) {
+    next(err)
   }
-};
+}
 
-export const updateDirector = async (req, res) => {
+export const updateDirector = async (req, res, next) => {
   try {
-    const { name, nationality } = req.body;
-    if (!name || !nationality) return res.status(400).json({ error: 'Missing required fields' });
-    const director = await Director.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!director) return res.status(404).json({ error: 'Director not found' });
-    res.json(director);
-  } catch {
-    res.status(400).json({ error: 'Invalid ID' });
+    const { name, nationality } = req.body
+    if (!name || !nationality) {
+      const error = new Error('Missing required fields')
+      error.status = 400
+      throw error
+    }
+    const director = await Director.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    if (!director) {
+      const error = new Error('Director not found')
+      error.status = 404
+      throw error
+    }
+    res.json(director)
+  } catch (err) {
+    next(err)
   }
-};
+}
 
-export const deleteDirector = async (req, res) => {
+export const deleteDirector = async (req, res, next) => {
   try {
-    const director = await Director.findByIdAndDelete(req.params.id);
-    if (!director) return res.status(404).json({ error: 'Director not found' });
-    res.json({ message: 'Director deleted' });
-  } catch {
-    res.status(400).json({ error: 'Invalid ID' });
+    const director = await Director.findByIdAndDelete(req.params.id)
+    if (!director) {
+      const error = new Error('Director not found')
+      error.status = 404
+      throw error
+    }
+    res.json({ message: 'Director deleted' })
+  } catch (err) {
+    next(err)
   }
-};
+}

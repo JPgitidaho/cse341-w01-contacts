@@ -1,54 +1,74 @@
-import Movie from '../models/Movie.js';
+import Movie from '../models/Movie.js'
 
-export const getMovies = async (req, res) => {
+export const getMovies = async (req, res, next) => {
   try {
-    const movies = await Movie.find();
-    res.json(movies);
-  } catch {
-    res.status(500).json({ error: 'Server error' });
+    const movies = await Movie.find().populate('directorId', 'name nationality')
+    res.json(movies)
+  } catch (err) {
+    next(err)
   }
-};
+}
 
-export const getMovieById = async (req, res) => {
+export const getMovieById = async (req, res, next) => {
   try {
-    const movie = await Movie.findById(req.params.id);
-    if (!movie) return res.status(404).json({ error: 'Movie not found' });
-    res.json(movie);
-  } catch {
-    res.status(400).json({ error: 'Invalid ID' });
+    const movie = await Movie.findById(req.params.id).populate('directorId', 'name nationality')
+    if (!movie) {
+      const error = new Error('Movie not found')
+      error.status = 404
+      throw error
+    }
+    res.json(movie)
+  } catch (err) {
+    next(err)
   }
-};
+}
 
-export const createMovie = async (req, res) => {
+export const createMovie = async (req, res, next) => {
   try {
-    const { title, genre, releaseYear } = req.body;
-    if (!title || !genre || !releaseYear) return res.status(400).json({ error: 'Missing required fields' });
-    const movie = new Movie(req.body);
-    await movie.save();
-    res.status(201).json(movie);
-  } catch {
-    res.status(500).json({ error: 'Server error' });
+    const { title, genre, releaseYear } = req.body
+    if (!title || !genre || !releaseYear) {
+      const error = new Error('Missing required fields')
+      error.status = 400
+      throw error
+    }
+    const movie = new Movie(req.body)
+    await movie.save()
+    res.status(201).json(movie)
+  } catch (err) {
+    next(err)
   }
-};
+}
 
-export const updateMovie = async (req, res) => {
+export const updateMovie = async (req, res, next) => {
   try {
-    const { title, genre, releaseYear } = req.body;
-    if (!title || !genre || !releaseYear) return res.status(400).json({ error: 'Missing required fields' });
-    const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!movie) return res.status(404).json({ error: 'Movie not found' });
-    res.json(movie);
-  } catch {
-    res.status(400).json({ error: 'Invalid ID' });
+    const { title, genre, releaseYear } = req.body
+    if (!title || !genre || !releaseYear) {
+      const error = new Error('Missing required fields')
+      error.status = 400
+      throw error
+    }
+    const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    if (!movie) {
+      const error = new Error('Movie not found')
+      error.status = 404
+      throw error
+    }
+    res.json(movie)
+  } catch (err) {
+    next(err)
   }
-};
+}
 
-export const deleteMovie = async (req, res) => {
+export const deleteMovie = async (req, res, next) => {
   try {
-    const movie = await Movie.findByIdAndDelete(req.params.id);
-    if (!movie) return res.status(404).json({ error: 'Movie not found' });
-    res.json({ message: 'Movie deleted' });
-  } catch {
-    res.status(400).json({ error: 'Invalid ID' });
+    const movie = await Movie.findByIdAndDelete(req.params.id)
+    if (!movie) {
+      const error = new Error('Movie not found')
+      error.status = 404
+      throw error
+    }
+    res.json({ message: 'Movie deleted' })
+  } catch (err) {
+    next(err)
   }
-};
+}

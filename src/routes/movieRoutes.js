@@ -1,12 +1,19 @@
-import { Router } from 'express';
-import { getMovies, getMovieById, createMovie, updateMovie, deleteMovie } from '../controllers/movieController.js';
+import express from 'express'
+import {
+  getMovies,
+  getMovieById,
+  createMovie,
+  updateMovie,
+  deleteMovie
+} from '../controllers/movieController.js'
+import requireAuth from '../middlewares/requireAuth.js'
 
-const router = Router();
+const router = express.Router()
 
-router.get('/', getMovies);
-router.get('/:id', getMovieById);
-router.post('/', createMovie);
-router.put('/:id', updateMovie);
-router.delete('/:id', deleteMovie);
+router.get('/', getMovies)
+router.get('/:id', getMovieById)
+router.post('/', requireAuth, createMovie)
+router.put('/:id', requireAuth, updateMovie)
+router.delete('/:id', requireAuth, deleteMovie)
 
-export default router;
+export default router
